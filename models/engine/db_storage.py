@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Contains the class DBStorage
+  Contains the class DBStorage
 """
 
 import models
@@ -76,28 +76,27 @@ class DBStorage:
         self.__session.remove()
 
     def get(self, cls, id):
-        """Returns the object based on the class and its ID, or None if not found
+        """ Returns the object based on the class and its ID,
+            or None if not found
         """
-        if cls not in classes.values():
+        if cls is not None and type(cls) is str and id is not None and\
+           type(id) is str and cls in classes:
+            cls = classes[cls]
+            result = self.__session.query(cls).filter(cls.id == id).first()
+            return result
+        else:
             return None
 
-        all_cls = models.storage.all(cls)
-        for val in all_cls.values():
-            if (val.id == id):
-                return val
-        return None
-
     def count(self, cls=None):
+        """ Returns the number of objects in storage matching the given class.
+            If no class is passed,
+            returns the count of all objects in dbstorage
         """
-        Returns the number of objects in storage matching the given class
-        If no class is passed, returns the count of all objects in storage
-        """
-        all_clss = classes.values()
-
-        if not cls:
-            count = 0
-            for clss in all_clss:
-                count += len(models.storage.all(clss).values())
-        else:
-            count = len(models.storage.all(cls).values())
-        return count
+        total = 0
+        if type(cls) == str and cls in classes:
+            cls = classes[cls]
+            total = self.__session.query(cls).count()
+        elif cls is None:
+            for cls in classes.values():
+                total += self.__session.query(cls).count()
+        return total
