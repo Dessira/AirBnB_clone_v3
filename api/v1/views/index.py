@@ -18,7 +18,7 @@ classes = {
 @app_views.route('/status', methods=['Get'])
 def return_status():
     """returns the status of the request"""
-    return jsonify({'status': 'OK')
+    return jsonify({'status': 'OK'})
 
 @app_views.route('/stats', strict_slashes=False)
 def stats():
